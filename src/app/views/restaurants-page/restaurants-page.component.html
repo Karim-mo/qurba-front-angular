@@ -3,6 +3,18 @@
     <h2 style="border-bottom: 2px solid gray">Our Restaurants</h2>
   </div>
   <div class="row">
-    <!-- <app-restaurant></app-restaurant> -->
+    <app-spinner *ngIf="restaurantsList.loading"></app-spinner>
+    <app-message
+      *ngIf="restaurantsList.error"
+      [text]="restaurantsList.error"
+    ></app-message>
+    <ng-container *ngIf="!restaurantsList.error && !restaurantsList.loading">
+      <app-restaurant
+        class="col-sm-12 col-md-4"
+        *ngFor="let restaurant of restaurantsList.restaurants"
+        [restaurant]="restaurant"
+      ></app-restaurant>
+    </ng-container>
+    <!-- New row for pagination later -->
   </div>
 </div>

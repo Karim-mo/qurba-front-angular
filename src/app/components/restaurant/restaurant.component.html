@@ -1,14 +1,13 @@
-<div class="col-sm-12 col-md-4">
-  <div class="card mb-3">
-    <a href="#" style="text-decoration: none"
-      ><h3 class="card-header">Pizza Hut</h3></a
-    >
-    <a href="#" class="mt-1"
-      ><img
-        src="https://images.deliveryhero.io/image/otlob/restaurants/e9rv_sqp_636848776651300706.jpg"
-        height="300px"
-        style="width: 100%"
-    /></a>
-    <div class="card-footer text-muted text-center">Italian</div>
+<div class="card mb-3">
+  <a
+    routerLink="/restaurants/{{ restaurant._id }}"
+    style="text-decoration: none"
+    ><h3 class="card-header">{{ restaurant.name }}</h3></a
+  >
+  <a routerLink="/restaurants/{{ restaurant._id }}"
+    ><img src="{{ restaurant.image }}" height="300px" style="width: 100%"
+  /></a>
+  <div class="card-footer text-muted text-center">
+    {{ restaurant.category }}
   </div>
 </div>
