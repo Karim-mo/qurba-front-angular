@@ -13,11 +13,14 @@ import { RestaurantComponent } from './components/restaurant/restaurant.componen
 import { FooterComponent } from './components/footer/footer.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { MessageComponent } from './components/message/message.component';
+import { RestaurantDetailsComponent } from './views/restaurant-details/restaurant-details.component';
+import { MenuItemComponent } from './components/menu-item/menu-item.component';
 
 const appRoutes = [
   { path: '', component: RestaurantsPageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'restaurants/:id', component: RestaurantDetailsComponent },
 ];
 
 @NgModule({
@@ -31,6 +34,8 @@ const appRoutes = [
     FooterComponent,
     SpinnerComponent,
     MessageComponent,
+    RestaurantDetailsComponent,
+    MenuItemComponent,
   ],
   imports: [
     BrowserModule,

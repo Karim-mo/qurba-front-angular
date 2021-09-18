@@ -3,6 +3,7 @@ import { usersApiService } from '../../services/users-api.service';
 import { Subscription } from 'rxjs';
 import { userState } from '../../models/UserModel';
 import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -23,11 +24,11 @@ export class RegisterComponent implements OnInit {
   emailUserPhone: string;
   password: string;
   cooldown: boolean = false;
-  registered: boolean = false;
+  registered: boolean = false; // To avoid showing a success message before redirecting if user tried to access the register route while logged in(make sure the success message is only if we register ourselves)
   messageSubject: any = new Subject();
   cooldownSubject: any = new Subject();
 
-  constructor(private usersService: usersApiService) {}
+  constructor(private usersService: usersApiService, private router: Router) {}
 
   onRegister(): void {
     if (!this.emailUserPhone || !this.password || !this.name) {
@@ -68,13 +69,13 @@ export class RegisterComponent implements OnInit {
     this.userSubscription = this.usersService
       .userReducer()
       .subscribe((value) => {
-        console.log(value);
         this.user = value;
         if (value.error) {
           this.success = false;
           this.message = value.error;
           this.showMessage = true;
           this.messageSubject.next();
+          this.usersService.resetErrors();
         } else if (
           this.registered &&
           this.user.user &&
@@ -84,6 +85,17 @@ export class RegisterComponent implements OnInit {
           this.message = 'Successfully created an account.';
           this.showMessage = true;
           this.messageSubject.next();
+          this.cooldown = true;
+          this.cooldownSubject.next();
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000);
+        } else if (
+          !this.registered &&
+          this.user.user &&
+          Object.keys(this.user.user).length > 0
+        ) {
+          this.router.navigate(['/']);
         }
       });
     this.usersService.getState();

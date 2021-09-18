@@ -1,6 +1,15 @@
 <div class="container mt-5">
-  <div>
-    <h2 style="border-bottom: 2px solid gray">Our Restaurants</h2>
+  <div style="border-bottom: 2px solid gray" class="mb-2 row">
+    <div class="col col-sm-7 col-md-9"><h2>Our Restaurants</h2></div>
+    <div class="col">
+      <button
+        *ngIf="isUserLoggedIn()"
+        class="btn btn-primary"
+        (click)="open(content)"
+      >
+        Create A Restaurant
+      </button>
+    </div>
   </div>
   <div class="row">
     <app-spinner *ngIf="restaurantsList.loading"></app-spinner>
@@ -17,4 +26,79 @@
     </ng-container>
     <!-- New row for pagination later -->
   </div>
+
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">
+        Create a new restaurant
+      </h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <fieldset>
+          <div class="form-group">
+            <label for="name" class="form-label mt-4">Restaurant Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              [(ngModel)]="name"
+              placeholder="Restaurant Name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="image" class="form-label mt-4">Image URL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="image"
+              name="image"
+              [(ngModel)]="image"
+              placeholder="Restaurant Image URL"
+            />
+          </div>
+          <div class="form-group">
+            <label for="description" class="form-label mt-4">Description</label>
+            <input
+              type="text"
+              class="form-control"
+              id="description"
+              name="description"
+              [(ngModel)]="description"
+              placeholder="Restaurant Description"
+            />
+          </div>
+          <div class="form-group">
+            <label for="category" class="form-label mt-4">Category</label>
+            <input
+              type="text"
+              class="form-control"
+              id="category"
+              name="category"
+              [(ngModel)]="category"
+              placeholder="Restaurant Name"
+            />
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="onAddRestaurant()"
+      >
+        Save
+      </button>
+    </div>
+  </ng-template>
 </div>

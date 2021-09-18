@@ -143,6 +143,27 @@ export class usersApiService {
     }
   }
 
+  async logout() {
+    this.state = {
+      user: null,
+      error: null,
+      loading: false,
+    };
+
+    this._userReducer.next(this.state);
+
+    localStorage.removeItem('user');
+  }
+
+  async resetErrors() {
+    this.state = {
+      ...this.state,
+      error: null,
+    };
+
+    this._userReducer.next(this.state);
+  }
+
   getState(): void {
     this._userReducer.next(this.state);
   }
