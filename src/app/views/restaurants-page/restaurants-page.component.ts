@@ -4,7 +4,7 @@ import { restaurantsState } from '../../models/RestaurantsModel';
 import { userState } from '../../models/UserModel';
 import { Subscription } from 'rxjs';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { usersApiService } from 'src/app/services/users-api.service';
+import { AgsmService } from 'agsm';
 
 @Component({
   selector: 'app-restaurants-page',
@@ -31,7 +31,7 @@ export class RestaurantsPageComponent implements OnInit {
   category: string;
 
   constructor(
-    private usersService: usersApiService,
+    private agsm: AgsmService,
     private restaurantsService: restaurantsApiService,
     private modalService: NgbModal
   ) {}
@@ -56,8 +56,8 @@ export class RestaurantsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userSubscription = this.usersService
-      .userReducer()
+    this.userSubscription = this.agsm
+      .stateSelector((state) => state.userReducer)
       .subscribe((value) => {
         this.user = value;
       });
@@ -67,7 +67,7 @@ export class RestaurantsPageComponent implements OnInit {
       .subscribe((value) => {
         this.restaurantsList = value;
       });
-    this.usersService.getState();
+    this.agsm.getStateValue((state) => state.userReducer);
     this.restaurantsService.getAllRestaurants();
   }
 

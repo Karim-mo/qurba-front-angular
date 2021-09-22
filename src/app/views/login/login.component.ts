@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { usersApiService } from '../../services/users-api.service';
 import { Subscription } from 'rxjs';
 import { userState } from '../../models/UserModel';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
+import { AgsmService } from 'agsm';
+import { UserActionsService } from 'src/app/agsm/actions/user-actions.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,11 @@ export class LoginComponent implements OnInit {
   password: string;
   messageSubject: any = new Subject();
 
-  constructor(private usersService: usersApiService, private router: Router) {}
+  constructor(
+    private agsm: AgsmService,
+    private router: Router,
+    private userActions: UserActionsService
+  ) {}
 
   onLogin(): void {
     if (!this.emailUserPhone || !this.password) {
@@ -32,7 +37,7 @@ export class LoginComponent implements OnInit {
       this.messageSubject.next();
       return;
     }
-    this.usersService.login({
+    this.userActions.login({
       emailUserPhone: this.emailUserPhone,
       password: this.password,
     });
@@ -48,20 +53,20 @@ export class LoginComponent implements OnInit {
       }, 3000)
     );
 
-    this.userSubscription = this.usersService
-      .userReducer()
+    this.userSubscription = this.agsm
+      .stateSelector((state) => state.userReducer)
       .subscribe((value) => {
         this.user = value;
         if (value.error) {
           this.message = value.error;
           this.showMessage = true;
           this.messageSubject.next();
-          this.usersService.resetErrors();
+          this.userActions.resetErrors();
         } else if (this.user.user && Object.keys(this.user.user).length > 0) {
           this.router.navigate(['/']);
         }
       });
-    this.usersService.getState();
+    this.agsm.getStateValue((state) => state.userReducer);
   }
 
   ngOnDestroy(): void {

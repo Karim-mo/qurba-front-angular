@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { usersApiService } from '../../services/users-api.service';
 import { Subscription } from 'rxjs';
 import { userState } from '../../models/UserModel';
 import { Subject } from 'rxjs';
+import { AgsmService } from 'agsm';
+import { UserActionsService } from 'src/app/agsm/actions/user-actions.service';
 
 @Component({
   selector: 'app-header',
@@ -17,19 +18,22 @@ export class HeaderComponent implements OnInit {
     error: null,
   };
 
-  constructor(private usersService: usersApiService) {}
+  constructor(
+    private agsm: AgsmService,
+    private userActions: UserActionsService
+  ) {}
 
   ngOnInit(): void {
-    this.userSubscription = this.usersService
-      .userReducer()
+    this.userSubscription = this.agsm
+      .stateSelector((state) => state.userReducer)
       .subscribe((value) => {
         this.user = value;
       });
-    this.usersService.getState();
+    this.agsm.getStateValue((state) => state.userReducer);
   }
 
   onLogout(): void {
-    this.usersService.logout();
+    this.userActions.logout();
   }
 
   isUserLoggedIn(): boolean {

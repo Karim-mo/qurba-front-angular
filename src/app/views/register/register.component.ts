@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { usersApiService } from '../../services/users-api.service';
 import { Subscription } from 'rxjs';
 import { userState } from '../../models/UserModel';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
+import { UserActionsService } from 'src/app/agsm/actions/user-actions.service';
+import { AgsmService } from 'agsm';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +29,11 @@ export class RegisterComponent implements OnInit {
   messageSubject: any = new Subject();
   cooldownSubject: any = new Subject();
 
-  constructor(private usersService: usersApiService, private router: Router) {}
+  constructor(
+    private userActions: UserActionsService,
+    private router: Router,
+    private agsm: AgsmService
+  ) {}
 
   onRegister(): void {
     if (!this.emailUserPhone || !this.password || !this.name) {
@@ -40,7 +45,7 @@ export class RegisterComponent implements OnInit {
       this.cooldownSubject.next();
       return;
     }
-    this.usersService.register({
+    this.userActions.register({
       name: this.name,
       emailUserPhone: this.emailUserPhone,
       password: this.password,
@@ -66,8 +71,8 @@ export class RegisterComponent implements OnInit {
       }, 5000)
     );
 
-    this.userSubscription = this.usersService
-      .userReducer()
+    this.userSubscription = this.agsm
+      .stateSelector((state) => state.userReducer)
       .subscribe((value) => {
         this.user = value;
         if (value.error) {
@@ -75,7 +80,7 @@ export class RegisterComponent implements OnInit {
           this.message = value.error;
           this.showMessage = true;
           this.messageSubject.next();
-          this.usersService.resetErrors();
+          this.userActions.resetErrors();
         } else if (
           this.registered &&
           this.user.user &&
@@ -98,7 +103,7 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/']);
         }
       });
-    this.usersService.getState();
+    this.agsm.getStateValue((state) => state.userReducer);
   }
 
   ngOnDestroy(): void {

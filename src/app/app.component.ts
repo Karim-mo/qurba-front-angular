@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { usersApiService } from './services/users-api.service';
 import { Subscription } from 'rxjs';
 import { userState } from './models/UserModel';
 import { Subject } from 'rxjs';
+import { AgsmService } from 'agsm';
+import { StoreService } from './agsm/store.service';
 
 @Component({
   selector: 'app-root',
@@ -19,18 +20,24 @@ export class AppComponent {
     error: null,
   };
 
-  constructor(private usersService: usersApiService) {
+  constructor(private agsm: AgsmService, private store: StoreService) {
     this.user.user = localStorage.getItem('user')
       ? JSON.parse(localStorage.getItem('user'))
       : {};
   }
 
   ngOnInit(): void {
-    this.userSubscription = this.usersService
-      .userReducer()
+    this.userSubscription = this.agsm
+      .stateSelector((state) => state.userReducer)
       .subscribe((value) => {
         this.user = value;
       });
-    this.usersService.setState(this.user);
+    this.agsm.setReducerState('userReducer', this.user, true);
+    // this.userSubscription = this.usersService
+    //   .userReducer()
+    //   .subscribe((value) => {
+    //     this.user = value;
+    //   });
+    // this.usersService.setState(this.user);
   }
 }
