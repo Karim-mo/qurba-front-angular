@@ -32,7 +32,7 @@ export class AppComponent {
       .subscribe((value) => {
         this.user = value;
       });
-    this.agsm.setReducerState('userReducer', this.user, true);
+    this.agsm.setReducerState((state) => state.userReducer, this.user, true);
     // this.userSubscription = this.usersService
     //   .userReducer()
     //   .subscribe((value) => {
