@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/']);
         }
       });
-    this.agsm.getStateValue((state) => state.userReducer);
+    //this.agsm.getStateValue((state) => state.userReducer);
   }
 
   ngOnDestroy(): void {

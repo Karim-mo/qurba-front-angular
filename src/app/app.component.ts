@@ -27,11 +27,6 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    this.userSubscription = this.agsm
-      .stateSelector((state) => state.userReducer)
-      .subscribe((value) => {
-        this.user = value;
-      });
     this.agsm.setReducerState((state) => state.userReducer, this.user, true);
     // this.userSubscription = this.usersService
     //   .userReducer()

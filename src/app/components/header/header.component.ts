@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
       .subscribe((value) => {
         this.user = value;
       });
-    this.agsm.getStateValue((state) => state.userReducer);
+    //this.agsm.getStateValue((state) => state.userReducer);
   }
 
   onLogout(): void {

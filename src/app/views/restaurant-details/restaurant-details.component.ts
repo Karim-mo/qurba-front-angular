@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { restaurantsApiService } from '../../services/restaurantsApi.service';
 import { restaurantDetailsState } from '../../models/RestaurantDetailsModel';
 import { Subscription } from 'rxjs';
+import { RestaurantActionsService } from 'src/app/agsm/actions/restaurant-actions.service';
+import { AgsmService } from 'agsm';
 
 @Component({
   selector: 'app-restaurant-details',
@@ -18,19 +19,21 @@ export class RestaurantDetailsComponent implements OnInit {
   };
 
   constructor(
-    private restaurantsService: restaurantsApiService,
+    private restaurantActions: RestaurantActionsService,
+    private agsm: AgsmService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.restaurantDetailsSubscription = this.restaurantsService
-      .restaurantDetailsReducer()
+    this.restaurantDetailsSubscription = this.agsm
+      .stateSelector((state) => state.restaurantDetails)
       .subscribe((value) => {
         this.restaurantDetails = value;
       });
-    this.restaurantsService.getRestaurantDetails(
+    this.restaurantActions.getRestaurantDetails(
       this.route.snapshot.paramMap.get('id')
     );
+
     //console.log(this.route.snapshot.paramMap.get('id'));
   }
 

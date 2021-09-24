@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { restaurantsApiService } from '../../services/restaurantsApi.service';
 import { restaurantsState } from '../../models/RestaurantsModel';
 import { userState } from '../../models/UserModel';
 import { Subscription } from 'rxjs';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { AgsmService } from 'agsm';
+import { RestaurantActionsService } from 'src/app/agsm/actions/restaurant-actions.service';
 
 @Component({
   selector: 'app-restaurants-page',
@@ -32,20 +32,17 @@ export class RestaurantsPageComponent implements OnInit {
 
   constructor(
     private agsm: AgsmService,
-    private restaurantsService: restaurantsApiService,
+    private restaurantActions: RestaurantActionsService,
     private modalService: NgbModal
   ) {}
 
   onAddRestaurant(): void {
-    this.restaurantsService.addRestaurant(
-      {
-        name: this.name,
-        image: this.image,
-        description: this.description,
-        category: this.category,
-      },
-      this.user.user.token
-    );
+    this.restaurantActions.addRestaurant({
+      name: this.name,
+      image: this.image,
+      description: this.description,
+      category: this.category,
+    });
     this.modalService.dismissAll();
   }
 
@@ -62,13 +59,13 @@ export class RestaurantsPageComponent implements OnInit {
         this.user = value;
       });
 
-    this.restaurantsListSubscription = this.restaurantsService
-      .restaurantsReducer()
+    this.restaurantsListSubscription = this.agsm
+      .stateSelector((state) => state.restaurantsList)
       .subscribe((value) => {
         this.restaurantsList = value;
       });
-    this.agsm.getStateValue((state) => state.userReducer);
-    this.restaurantsService.getAllRestaurants();
+    //this.agsm.getStateValue((state) => state.userReducer);
+    this.restaurantActions.getAllRestaurants();
   }
 
   isUserLoggedIn(): boolean {
