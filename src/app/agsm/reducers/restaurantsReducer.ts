@@ -11,7 +11,7 @@ export const restaurantsReducer = (
   action: any,
   state = {
     loading: true,
-    restaurants: null,
+    restaurants: [],
     pages: 0,
     error: null,
   }
@@ -29,7 +29,7 @@ export const restaurantsReducer = (
     case RESTAURANTS_FAIL:
       return {
         loading: false,
-        restaurants: null,
+        restaurants: [],
         pages: 0,
         error: action.payload,
       };

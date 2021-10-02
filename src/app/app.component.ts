@@ -13,26 +13,7 @@ import { StoreService } from './agsm/store.service';
 export class AppComponent {
   title = 'qurba-front-angular';
 
-  userSubscription: Subscription;
-  user: userState = {
-    user: {},
-    loading: false,
-    error: null,
-  };
+  constructor(private agsm: AgsmService, private store: StoreService) {}
 
-  constructor(private agsm: AgsmService, private store: StoreService) {
-    this.user.user = localStorage.getItem('user')
-      ? JSON.parse(localStorage.getItem('user'))
-      : {};
-  }
-
-  ngOnInit(): void {
-    this.agsm.setReducerState((state) => state.userReducer, this.user, true);
-    // this.userSubscription = this.usersService
-    //   .userReducer()
-    //   .subscribe((value) => {
-    //     this.user = value;
-    //   });
-    // this.usersService.setState(this.user);
-  }
+  ngOnInit(): void {}
 }

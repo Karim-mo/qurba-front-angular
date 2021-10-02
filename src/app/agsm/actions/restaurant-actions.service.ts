@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
-import { restaurantsState } from '../../models/RestaurantsModel';
-import { restaurantDetailsState } from '../../models/RestaurantDetailsModel';
 import {
   RESTAURANTS_FAIL,
   RESTAURANTS_SUCCESS,
@@ -77,11 +74,8 @@ export class RestaurantActionsService {
 
     restaurantsList.restaurants.push(newRestaurant);
 
-    this.agsm.setReducerState(
-      (state) => state.restaurantsList,
-      restaurantsList,
-      false
-    );
+    this.agsm.dispatch(RESTAURANTS_SUCCESS, restaurantsList);
+
     try {
       await this.http
         .post<any>(
@@ -98,11 +92,8 @@ export class RestaurantActionsService {
     } catch (e: any) {
       restaurantsList.restaurants.pop();
 
-      this.agsm.setReducerState(
-        (state) => state.restaurantsList,
-        restaurantsList,
-        false
-      );
+      this.agsm.dispatch(RESTAURANTS_SUCCESS, restaurantsList);
+
       const error = e.error ? e.error.message : e.message;
       this.agsm.dispatch(RESTAURANTS_FAIL, error);
     }
